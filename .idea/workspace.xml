@@ -2,23 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f35969a3-31d3-4ed2-ad3e-fe3c4dbf44f9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/IMChatRoomDemo.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/comm/DataPack.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/comm/Message.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/config/ServerConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/netSrv/Client.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/netSrv/Server.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/netSrv/SocketManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/ClientTest1.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/ClientTest2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/ServerTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ui/ChatRoom.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ui/Login.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ui/ServerMonitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/comm/DataPack.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IMChatRoomDemo/comm/DataPack.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/config/ServerConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IMChatRoomDemo/config/ServerConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/netSrv/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IMChatRoomDemo/netSrv/Client.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/netSrv/Server$ProcessSocket.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IMChatRoomDemo/netSrv/Server$ProcessSocket.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/netSrv/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IMChatRoomDemo/netSrv/Server.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/netSrv/SocketManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IMChatRoomDemo/netSrv/SocketManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/test/ClientTest1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IMChatRoomDemo/test/ClientTest1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/test/ClientTest2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IMChatRoomDemo/test/ClientTest2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/comm/DataPack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/comm/DataPack.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/ServerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/ServerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/netSrv/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/netSrv/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/netSrv/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/netSrv/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/netSrv/SocketManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/netSrv/SocketManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/ClientTest1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/ClientTest1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/ClientTest2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/ClientTest2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/ServerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/ServerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,9 +52,23 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.HTML" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="preferences.JavaFX" />
   </component>
-  <component name="RunManager" selected="Application.ClientTest1">
+  <component name="RunManager" selected="Application.ChatRoom">
+    <configuration name="ChatRoom" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ui.ChatRoom" />
+      <module name="IMChatRoomDemo" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ClientTest1" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="test.ClientTest1" />
       <module name="IMChatRoomDemo" />
@@ -93,8 +110,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ClientTest1" />
+        <item itemvalue="Application.ChatRoom" />
         <item itemvalue="Application.ClientTest2" />
+        <item itemvalue="Application.ClientTest1" />
         <item itemvalue="Application.ServerTest" />
       </list>
     </recent_temporary>
@@ -109,7 +127,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1608814792097</updated>
-      <workItem from="1608814794835" duration="12432000" />
+      <workItem from="1608814794835" duration="17129000" />
     </task>
     <servers />
   </component>
@@ -121,26 +139,38 @@
       <screen x="0" y="0" width="1280" height="689" />
     </state>
     <state x="402" y="0" key="#com.intellij.ide.util.MemberChooser/0.0.1280.689@0.0.1280.689" timestamp="1608826513254" />
+    <state x="393" y="140" key="#com.intellij.tools.ToolEditorDialog" timestamp="1608830901815">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="393" y="140" key="#com.intellij.tools.ToolEditorDialog/0.0.1280.689@0.0.1280.689" timestamp="1608830901815" />
     <state x="171" y="0" key="#xdebugger.evaluate" timestamp="1608824184399">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
     <state x="171" y="0" key="#xdebugger.evaluate/0.0.1280.689@0.0.1280.689" timestamp="1608824184399" />
-    <state width="1227" height="318" key="GridCell.Tab.0.bottom" timestamp="1608827451218">
+    <state x="335" y="169" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1608830714248">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state width="1227" height="318" key="GridCell.Tab.0.bottom/0.0.1280.689@0.0.1280.689" timestamp="1608827451218" />
-    <state width="1227" height="318" key="GridCell.Tab.0.center" timestamp="1608827451218">
+    <state x="335" y="169" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1280.689@0.0.1280.689" timestamp="1608830714247" />
+    <state x="371" y="0" key="FileChooserDialogImpl" timestamp="1608831142070">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state width="1227" height="318" key="GridCell.Tab.0.center/0.0.1280.689@0.0.1280.689" timestamp="1608827451218" />
-    <state width="1227" height="318" key="GridCell.Tab.0.left" timestamp="1608827451217">
+    <state x="371" y="0" key="FileChooserDialogImpl/0.0.1280.689@0.0.1280.689" timestamp="1608831142070" />
+    <state width="1227" height="270" key="GridCell.Tab.0.bottom" timestamp="1608832187382">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state width="1227" height="318" key="GridCell.Tab.0.left/0.0.1280.689@0.0.1280.689" timestamp="1608827451217" />
-    <state width="1227" height="318" key="GridCell.Tab.0.right" timestamp="1608827451218">
+    <state width="1227" height="270" key="GridCell.Tab.0.bottom/0.0.1280.689@0.0.1280.689" timestamp="1608832187382" />
+    <state width="1227" height="270" key="GridCell.Tab.0.center" timestamp="1608832187381">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state width="1227" height="318" key="GridCell.Tab.0.right/0.0.1280.689@0.0.1280.689" timestamp="1608827451218" />
+    <state width="1227" height="270" key="GridCell.Tab.0.center/0.0.1280.689@0.0.1280.689" timestamp="1608832187381" />
+    <state width="1227" height="270" key="GridCell.Tab.0.left" timestamp="1608832187381">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state width="1227" height="270" key="GridCell.Tab.0.left/0.0.1280.689@0.0.1280.689" timestamp="1608832187381" />
+    <state width="1227" height="270" key="GridCell.Tab.0.right" timestamp="1608832187382">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state width="1227" height="270" key="GridCell.Tab.0.right/0.0.1280.689@0.0.1280.689" timestamp="1608832187382" />
     <state width="1227" height="221" key="GridCell.Tab.1.bottom" timestamp="1608824307324">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
@@ -157,5 +187,9 @@
       <screen x="0" y="0" width="1280" height="689" />
     </state>
     <state width="1227" height="221" key="GridCell.Tab.1.right/0.0.1280.689@0.0.1280.689" timestamp="1608824307324" />
+    <state x="26" y="0" key="SettingsEditor" timestamp="1608831028639">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="26" y="0" key="SettingsEditor/0.0.1280.689@0.0.1280.689" timestamp="1608831028639" />
   </component>
 </project>

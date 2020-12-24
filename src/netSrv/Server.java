@@ -16,17 +16,12 @@ public class Server {
     private int Port;
     private int MaxConnNum;
     private ServerSocket serverSocket;
-    private SocketManager socketManager;
 
-    public Server(String name, String host, int port, int maxConnNum) {
+    public Server(String name, String host, int port, int maxConnNum) throws IOException {
         this.Name = name;
         this.Host = host;
         this.Port = port;
         this.MaxConnNum = maxConnNum;
-        this.socketManager = new SocketManager();
-    }
-
-    public void InitServerSocket() throws IOException {
         this.serverSocket = new ServerSocket(this.Port);
     }
 
@@ -39,16 +34,14 @@ public class Server {
         this.SocketWelcome();
         while (true) {
             Socket socket = serverSocket.accept();
-            new Thread(new ProcessSocket(socket,socketManager)).start();
+            new Thread(new ProcessSocket(socket)).start();
         }
     }
 
     static class ProcessSocket implements Runnable{
         private Socket socket;
-        private SocketManager socketManager;
-        public ProcessSocket(Socket socket,SocketManager socketManager){
+        public ProcessSocket(Socket socket){
             this.socket = socket;
-            this.socketManager = socketManager;
         }
         @Override
         public void run() {
@@ -62,7 +55,6 @@ public class Server {
         private void HandleSocket() throws IOException {
             while (true){
                 InputStream inputStream = socket.getInputStream();
-                DataPack dp = new DataPack();
                 int eof = inputStream.read();
                 if (eof == -1) {
                     System.out.println("input stream is null now");
@@ -71,7 +63,7 @@ public class Server {
                 byte[] msg = new byte[eof];
                 int len = inputStream.read(msg);
                 ByteBuffer buffer = ByteBuffer.wrap(msg);
-                Message message = dp.Unpack(buffer);
+                Message message = DataPack.dp.Unpack(buffer);
                 if (message.IsEndOfMessage()) {
                     break;
                 }
@@ -79,7 +71,7 @@ public class Server {
                 System.out.println("----->Recv Message from Client: "+message.getFromId()+" , content is :"
                         + new String(message.getData(), StandardCharsets.UTF_8)+
                         ", Send To Client:"+message.getToId());
-                socketManager.DoTransmit(message,socket);
+                SocketManager.socketManager.DoTransmit(message,socket);
             }
             socket.close();
         }

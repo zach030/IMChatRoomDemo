@@ -1,20 +1,15 @@
 package test;
 
-import comm.DataPack;
-import comm.Message;
 import config.ServerConfig;
 import netSrv.Client;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 public class ClientTest2 {
     public static void main(String[] args) throws IOException {
-        Client client2 = new Client(2,"zach");
-        client2.InitClientSocket(ServerConfig.serverConfig.Host,ServerConfig.serverConfig.Port);
+        Client client2 = new Client(2,"zach",ServerConfig.serverConfig.Host,ServerConfig.serverConfig.Port);
 //        OutputStream outputStream = client2.getSocket().getOutputStream();
 //        Message msg1 = new Message(client2.getID(),1,"hello server 1, I am client 2".getBytes(StandardCharsets.UTF_8));
 //        System.out.println("<------Send Message to server: "+new String(msg1.getData(),StandardCharsets.UTF_8));

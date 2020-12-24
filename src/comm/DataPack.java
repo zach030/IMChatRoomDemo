@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 public class DataPack {
 
+    public static DataPack dp = new DataPack();
     public DataPack() {
 
     }
