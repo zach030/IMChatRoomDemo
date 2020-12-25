@@ -27,10 +27,12 @@ public class Client {
     }
 
     public void ClientOnline() throws IOException {
-        //上线
-        Message message = this.PrepareMsg(-1, "Client ID:" + this.getID()
-                + ",NickName:" + this.NickName + ", is online");
+        //上线  1 发消息给 server
+        System.out.println("[Client Online] Client ID = " + this.ID + ", NickName = " + this.NickName + ", is Online......");
+        Message message = this.PrepareMsg(-1, "Client ID: " + this.getID()
+                + ", NickName: " + this.NickName + ", is online");
         this.SendMsg(message);
+        this.ReceiveMsg();
     }
 
     public void ClientOffLine() {
@@ -38,12 +40,12 @@ public class Client {
     }
 
     public void DoSendMsg(int targetID, String content) throws IOException {
-        this.SendMsg(this.PrepareMsg(targetID,content));
+        this.SendMsg(this.PrepareMsg(targetID, content));
     }
 
     private Message PrepareMsg(int targetID, String content) {
         Message message = new Message(this.ID, targetID, content.getBytes());
-        System.out.println("<------Send Message to server: " + new String(message.getData(), StandardCharsets.UTF_8));
+        System.out.println("<------[Send Message] To Server: " + new String(message.getData(), StandardCharsets.UTF_8));
         return message;
     }
 
@@ -51,18 +53,17 @@ public class Client {
         ByteBuffer outBuffer = DataPack.dp.Pack(message);
         outputStream.write(outBuffer.array());
         outputStream.flush();
-        System.out.println("<---------- 用户:" + this.ID + ",昵称:" + this.NickName + ",成功发送消息");
     }
 
     public void ReceiveMsg() {
+        System.out.println("[Client Receiver]  Client:" + this.ID + ", Socket is:" + this.socket + ", is receiving Message...");
         Ready2Receive ready2Receive = new Ready2Receive(this.socket);
-        while (true) {
-            new Thread(ready2Receive).start();
-        }
+        new Thread(ready2Receive).start();
     }
 
     static class Ready2Receive implements Runnable {
         private Socket socket;
+
         public Ready2Receive(Socket socket) {
             this.socket = socket;
         }
@@ -71,7 +72,7 @@ public class Client {
         public void run() {
             try {
                 HandleReceivingSocket();
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -84,16 +85,18 @@ public class Client {
                     System.out.println("input stream is null now");
                     break;
                 }
+                //System.out.println("eof is:" + eof);
                 byte[] msg = new byte[eof];
                 int len = inputStream.read(msg);
+
                 ByteBuffer buffer = ByteBuffer.wrap(msg);
                 Message message = DataPack.dp.Unpack(buffer);
                 if (message.IsEndOfMessage()) {
                     break;
                 }
                 message.SetMessageLen(len);
-                System.out.println("----->Recv Message By Transmit: " + message.getFromId() + " , content is :"
-                        + new String(message.getData(), StandardCharsets.UTF_8));
+                System.out.println("----->[Client Recv] Recv Message From Client Id =  " + message.getFromId() +
+                        ", Message is : " + new String(message.getData(), StandardCharsets.UTF_8));
             }
             socket.close();
         }

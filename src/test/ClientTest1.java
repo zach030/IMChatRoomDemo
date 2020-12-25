@@ -13,12 +13,10 @@ public class ClientTest1 {
 
         TimeUnit.SECONDS.sleep(3);
 
-        client1.DoSendMsg(2,"hello client 2");
+        client1.DoSendMsg(2,"你好朋友");
 
         TimeUnit.SECONDS.sleep(3);
 
-        client1.DoSendMsg(2,"hello server 2, I am client 1");
-
-        client1.ReceiveMsg();
+        client1.DoSendMsg(2,"我是客户端1");
     }
 }

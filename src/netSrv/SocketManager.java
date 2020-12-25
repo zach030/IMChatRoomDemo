@@ -3,10 +3,11 @@ package netSrv;
 import comm.*;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 // target: -1 --- to server;
 // 0 ---- broadcast ;
@@ -21,12 +22,7 @@ public class SocketManager {
 
     }
 
-    public void DealSocket(Socket socket) {
-
-    }
-
-    public void DoTransmit(Message message, Socket socket) throws IOException {
-        this.Add2SocketManager(message.getFromId(), socket);
+    public void DoTransmit(Message message) throws IOException {
         switch (message.getToId()){
             case -1:
                 msgTransmit = new MsgToServer();
@@ -43,7 +39,7 @@ public class SocketManager {
     }
 
     public void Add2SocketManager(int ID, Socket socket) {
-        System.out.println("Successfully add client " + ID + " to socket manager!");
+        System.out.println("[SocketManager]  Successfully add client " + ID + " to socket manager!");
         this.allClientSocketMap.put(ID, socket);
     }
 
@@ -52,5 +48,16 @@ public class SocketManager {
             return null;
         }
         return this.allClientSocketMap.get(id);
+    }
+
+    public ArrayList<Socket> GetAllAvailableSocketList(){
+        ArrayList<Socket> allSockets = new ArrayList<>();
+        Iterator<Map.Entry<Integer, Socket>> map1it=allClientSocketMap.entrySet().iterator();
+        while(map1it.hasNext())
+        {
+            Map.Entry<Integer, Socket> entry= map1it.next();
+            allSockets.add(entry.getValue());
+        }
+        return allSockets;
     }
 }

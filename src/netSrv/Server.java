@@ -28,7 +28,7 @@ public class Server {
     }
 
     public void SocketWelcome() {
-        System.out.println("Server Name:" + this.Name + ", listen at IP:" + this.Host + ",Port:" + this.Port + ", is Starting");
+        System.out.println("[Server Start] Server  Name:" + this.Name + ", listen at IP:" + this.Host + ",Port:" + this.Port + ", is Starting......");
     }
 
     public void Start() throws IOException {
@@ -71,8 +71,10 @@ public class Server {
                     break;
                 }
                 message.SetMessageLen(len);
-                SocketManager.socketManager.DoTransmit(message, socket);
+                SocketManager.socketManager.Add2SocketManager(message.getFromId(), socket);
+                SocketManager.socketManager.DoTransmit(message);
             }
+            System.out.println("[Server] Socket :"+socket+", is Closed...");
             socket.close();
         }
     }

@@ -10,6 +10,7 @@ public class MsgToClient implements MsgTransmit {
             System.err.println("您的好友不存在");
             return;
         }
+        System.out.println("[SocketManager] Transmit Msg To Socket: "+targetSocket);
         OutputStream out = targetSocket.getOutputStream();
         out.write(DataPack.dp.Pack(message).array());
         out.flush();
