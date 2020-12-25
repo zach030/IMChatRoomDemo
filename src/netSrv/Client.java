@@ -23,47 +23,82 @@ public class Client {
         this.socket = new Socket(host, port);
         this.outputStream = this.socket.getOutputStream();
         this.inputStream = this.socket.getInputStream();
+        this.ClientOnline();
     }
 
-    public void ClientOnline() {
+    public void ClientOnline() throws IOException {
         //上线
+        Message message = this.PrepareMsg(-1, "Client ID:" + this.getID()
+                + ",NickName:" + this.NickName + ", is online");
+        this.SendMsg(message);
     }
 
     public void ClientOffLine() {
         //下线
     }
 
-    public Message PrepareMsg(int targetID, String content) {
+    public void DoSendMsg(int targetID, String content) throws IOException {
+        this.SendMsg(this.PrepareMsg(targetID,content));
+    }
+
+    private Message PrepareMsg(int targetID, String content) {
         Message message = new Message(this.ID, targetID, content.getBytes());
         System.out.println("<------Send Message to server: " + new String(message.getData(), StandardCharsets.UTF_8));
         return message;
     }
 
-    public void SendMsg(Message message) throws IOException {
+    private void SendMsg(Message message) throws IOException {
         ByteBuffer outBuffer = DataPack.dp.Pack(message);
         outputStream.write(outBuffer.array());
         outputStream.flush();
-        System.out.println("用户:" + this.ID + ",昵称:" + this.NickName + ",成功发送消息");
+        System.out.println("<---------- 用户:" + this.ID + ",昵称:" + this.NickName + ",成功发送消息");
     }
 
-    public void ReceiveMsg(){
-//        int eof = inputStream.read();
-//        if (eof == -1) {
-//            System.out.println("input stream is null now");
-//            break;
-//        }
-//        byte[] msg = new byte[eof];
-//        int len = inputStream.read(msg);
-//        ByteBuffer buffer = ByteBuffer.wrap(msg);
-//        Message message = DataPack.dp.Unpack(buffer);
-//        if (message.IsEndOfMessage()) {
-//            break;
-//        }
-//        message.SetMessageLen(len);
-//        System.out.println("----->Recv Message from Client: "+message.getFromId()+" , content is :"
-//                + new String(message.getData(), StandardCharsets.UTF_8)+
-//                ", Send To Client:"+message.getToId());
+    public void ReceiveMsg() {
+        Ready2Receive ready2Receive = new Ready2Receive(this.socket);
+        while (true) {
+            new Thread(ready2Receive).start();
+        }
     }
+
+    static class Ready2Receive implements Runnable {
+        private Socket socket;
+        public Ready2Receive(Socket socket) {
+            this.socket = socket;
+        }
+
+        @Override
+        public void run() {
+            try {
+                HandleReceivingSocket();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+
+        public void HandleReceivingSocket() throws IOException {
+            while (true) {
+                InputStream inputStream = this.socket.getInputStream();
+                int eof = inputStream.read();
+                if (eof == -1) {
+                    System.out.println("input stream is null now");
+                    break;
+                }
+                byte[] msg = new byte[eof];
+                int len = inputStream.read(msg);
+                ByteBuffer buffer = ByteBuffer.wrap(msg);
+                Message message = DataPack.dp.Unpack(buffer);
+                if (message.IsEndOfMessage()) {
+                    break;
+                }
+                message.SetMessageLen(len);
+                System.out.println("----->Recv Message By Transmit: " + message.getFromId() + " , content is :"
+                        + new String(message.getData(), StandardCharsets.UTF_8));
+            }
+            socket.close();
+        }
+    }
+
 
     public void ShutDownOutPut() throws IOException {
         this.socket.shutdownOutput();

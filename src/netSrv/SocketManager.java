@@ -1,16 +1,21 @@
 package netSrv;
 
-import comm.DataPack;
-import comm.Message;
+import comm.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 
+// target: -1 --- to server;
+// 0 ---- broadcast ;
+// 1..... --- to client
 public class SocketManager {
     public static SocketManager socketManager = new SocketManager();
+
     private HashMap<Integer, Socket> allClientSocketMap = new HashMap<>();
+    private MsgTransmit msgTransmit;
 
     public SocketManager() {
 
@@ -22,13 +27,19 @@ public class SocketManager {
 
     public void DoTransmit(Message message, Socket socket) throws IOException {
         this.Add2SocketManager(message.getFromId(), socket);
-        Socket targetSocket = this.GetTargetSocket(message.getToId());
-        if (targetSocket==null){
-            return;
+        switch (message.getToId()){
+            case -1:
+                msgTransmit = new MsgToServer();
+                break;
+            case 0:
+                msgTransmit = new MsgToBroadcast();
+                break;
+            default:
+                msgTransmit = new MsgToClient();
         }
-        OutputStream out = targetSocket.getOutputStream();
-        out.write(DataPack.dp.Pack(message).array());
-        out.flush();
+        Socket targetSocket = this.GetTargetSocket(message.getToId());
+        // target socket==null : send to server； !=null : send to client;  unsupported broadcast
+        msgTransmit.StartTransmit(message, targetSocket);
     }
 
     public void Add2SocketManager(int ID, Socket socket) {
@@ -38,7 +49,6 @@ public class SocketManager {
 
     public Socket GetTargetSocket(int id) {
         if (this.allClientSocketMap.get(id) == null) {
-            System.err.println("您的好友未上线!");
             return null;
         }
         return this.allClientSocketMap.get(id);

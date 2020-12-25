@@ -9,6 +9,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
     private String Name;
@@ -29,31 +31,32 @@ public class Server {
         System.out.println("Server Name:" + this.Name + ", listen at IP:" + this.Host + ",Port:" + this.Port + ", is Starting");
     }
 
-    // TODO 约定socket格式：前四个字段存client-id，用于存取socket
     public void Start() throws IOException {
         this.SocketWelcome();
         while (true) {
             Socket socket = serverSocket.accept();
-            new Thread(new ProcessSocket(socket)).start();
+            ProcessSocket processSocket = new ProcessSocket(socket);
+            new Thread(processSocket).start();
         }
     }
 
-    static class ProcessSocket implements Runnable{
+    static class ProcessSocket implements Runnable {
         private Socket socket;
-        public ProcessSocket(Socket socket){
+        public ProcessSocket(Socket socket) {
             this.socket = socket;
         }
+
         @Override
         public void run() {
             try {
                 HandleSocket();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
         private void HandleSocket() throws IOException {
-            while (true){
+            while (true) {
                 InputStream inputStream = socket.getInputStream();
                 int eof = inputStream.read();
                 if (eof == -1) {
@@ -68,10 +71,7 @@ public class Server {
                     break;
                 }
                 message.SetMessageLen(len);
-                System.out.println("----->Recv Message from Client: "+message.getFromId()+" , content is :"
-                        + new String(message.getData(), StandardCharsets.UTF_8)+
-                        ", Send To Client:"+message.getToId());
-                SocketManager.socketManager.DoTransmit(message,socket);
+                SocketManager.socketManager.DoTransmit(message, socket);
             }
             socket.close();
         }
