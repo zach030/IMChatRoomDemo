@@ -71,6 +71,7 @@ public class Server {
                     break;
                 }
                 message.SetMessageLen(len);
+                SocketManager.socketManager.StartMsgQueue(message);
                 SocketManager.socketManager.Add2SocketManager(message.getFromId(), socket);
                 SocketManager.socketManager.DoTransmit(message);
             }

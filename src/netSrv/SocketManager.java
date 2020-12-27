@@ -12,6 +12,9 @@ import java.util.Map;
 // target: -1 --- to server;
 // 0 ---- broadcast ;
 // 1..... --- to client
+
+//TODO socket 与 msg queue 组成 hashmap
+
 public class SocketManager {
     public static SocketManager socketManager = new SocketManager();
 
@@ -20,6 +23,11 @@ public class SocketManager {
 
     public SocketManager() {
 
+    }
+
+    public void StartMsgQueue(Message message){
+        MsgProducer msgProducer = new MsgProducer(message,Integer.toString(message.getFromId()));
+        msgProducer.run();
     }
 
     public void DoTransmit(Message message) throws IOException {
@@ -34,7 +42,7 @@ public class SocketManager {
                 msgTransmit = new MsgToClient();
         }
         Socket targetSocket = this.GetTargetSocket(message.getToId());
-        // target socket==null : send to server； !=null : send to client;  unsupported broadcast
+        // target socket==null : send to server； !=null : send to client; broadcast
         msgTransmit.StartTransmit(message, targetSocket);
     }
 
