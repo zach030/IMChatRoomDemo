@@ -9,20 +9,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-public class Login {
-    public static Login login = new Login();
+public class LoginFrame {
+    public static LoginFrame loginFrame = new LoginFrame();
 
     JFrame LoginMainFrame = new JFrame("登录");
     JLabel clientIdLabel = new JLabel("账号：");
     JTextField clientId = new JTextField();
-    JLabel clientNameLabel = new JLabel("昵称");
+    JLabel clientNameLabel = new JLabel("昵称：");
     JTextField clientName = new JTextField();
     Dimension dim1 = new Dimension(300, 30);
     JButton button1 = new JButton();
     Dimension dim2 = new Dimension(100, 30);
 
-    public Login() {
+    public LoginFrame() {
 
+    }
+
+    public static void main(String[] args) {
+        LoginFrame.loginFrame.initLoginFrame();
     }
 
     public void initLoginFrame() {
@@ -57,8 +61,10 @@ public class Login {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Client client = new Client(Integer.parseInt(clientId.getText()),clientName.getText(),
-                            ServerConfig.serverConfig.Host,ServerConfig.serverConfig.Port);
+                    Client client = new Client(Integer.parseInt(clientId.getText()), clientName.getText(),
+                            ServerConfig.serverConfig.Host, ServerConfig.serverConfig.Port);
+                    ClientFrame.clientFrame.Enter(client);
+                    LoginMainFrame.setVisible(false);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }

@@ -1,23 +1,20 @@
 package netSrv;
 
-import comm.DataPack;
-import comm.Message;
+import ui.ServerMonitor;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.ArrayList;
 
 public class Server {
+    public static ArrayList<String> serverLogList = new ArrayList<>();
     private String Name;
     private String Host;
     private int Port;
     private int MaxConnNum;
     private ServerSocket serverSocket;
+    static boolean running;
 
     public Server(String name, String host, int port, int maxConnNum) throws IOException {
         this.Name = name;
@@ -25,59 +22,40 @@ public class Server {
         this.Port = port;
         this.MaxConnNum = maxConnNum;
         this.serverSocket = new ServerSocket(this.Port);
+        running = true;
     }
 
-    public void SocketWelcome() {
-        System.out.println("[Server Start] Server  Name:" + this.Name + ", listen at IP:" + this.Host + ",Port:" + this.Port + ", is Starting......");
+    public String ServerWelcome() {
+        return "[Server Start] Server  Name:" + this.Name + ", listen at IP:" + this.Host + ",Port:" + this.Port + ", is Starting......";
+    }
+
+    public String ServerByeBye() {
+        return "[Server Stop] Server Name : " + this.Name + ", is stop......";
     }
 
     public void Start() throws IOException {
-        this.SocketWelcome();
-        while (true) {
-            Socket socket = serverSocket.accept();
-            ProcessSocket processSocket = new ProcessSocket(socket);
-            new Thread(processSocket).start();
+        serverLogList.add(this.ServerWelcome());
+        System.out.println(this.ServerWelcome());
+        while (running){
+            Socket socket = this.serverSocket.accept();
+            ServerThread serverThread = new ServerThread(socket);
+            serverThread.start();
         }
     }
 
-    static class ProcessSocket implements Runnable {
-        private Socket socket;
-        public ProcessSocket(Socket socket) {
-            this.socket = socket;
-        }
+    public void Stop() throws IOException {
+        serverLogList.add(ServerByeBye());
+        System.out.println(ServerByeBye());
+        running = false;
+        this.serverSocket.close();
+    }
 
-        @Override
-        public void run() {
-            try {
-                HandleSocket();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    public static boolean isRunning() {
+        return running;
+    }
 
-        private void HandleSocket() throws IOException {
-            while (true) {
-                InputStream inputStream = socket.getInputStream();
-                int eof = inputStream.read();
-                if (eof == -1) {
-                    System.out.println("input stream is null now");
-                    break;
-                }
-                byte[] msg = new byte[eof];
-                int len = inputStream.read(msg);
-                ByteBuffer buffer = ByteBuffer.wrap(msg);
-                Message message = DataPack.dp.Unpack(buffer);
-                if (message.IsEndOfMessage()) {
-                    break;
-                }
-                message.SetMessageLen(len);
-                SocketManager.socketManager.StartMsgQueue(message);
-                SocketManager.socketManager.Add2SocketManager(message.getFromId(), socket);
-                SocketManager.socketManager.DoTransmit(message);
-            }
-            System.out.println("[Server] Socket :"+socket+", is Closed...");
-            socket.close();
-        }
+    public static void setRunning(boolean running) {
+        Server.running = running;
     }
 
     public String getName() {

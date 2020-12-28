@@ -1,0 +1,53 @@
+package netSrv;
+
+import comm.DataPack;
+import comm.Message;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.net.Socket;
+import java.nio.ByteBuffer;
+
+public class ServerThread extends Thread {
+    Socket clientSocket;
+
+    public ServerThread(Socket socket) {
+        this.clientSocket = socket;
+    }
+
+    public void run() {
+        try {
+            HandleSocket();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void HandleSocket() throws IOException, ClassNotFoundException {
+        while (true) {
+            InputStream inputStream = clientSocket.getInputStream();
+            int eof = inputStream.read();
+            if (eof == -1) {
+                Server.serverLogList.add("[Server]  input stream is null now");
+                System.out.println("[Server]  input stream is null now");
+                break;
+            }
+            byte[] msg = new byte[eof];
+            int len = inputStream.read(msg);
+            ByteBuffer buffer = ByteBuffer.wrap(msg);
+            Message message = DataPack.dp.Unpack(buffer);
+            if (message.IsEndOfMessage()) {
+                break;
+            }
+            message.SetMessageLen(len);
+            //SocketManager.socketManager.StartMsgQueue(message);
+            SocketManager.socketManager.Add2SocketManager(message, clientSocket);
+            SocketManager.socketManager.DoTransmit(message);
+        }
+        Server.serverLogList.add("[Server] Socket :" + clientSocket + ", is Closed...");
+        System.out.println("[Server] Socket :" + clientSocket + ", is Closed...");
+        clientSocket.close();
+        this.interrupt();
+    }
+}

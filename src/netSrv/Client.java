@@ -5,6 +5,7 @@ import comm.Message;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -28,6 +29,7 @@ public class Client {
 
     public void ClientOnline() throws IOException {
         //上线  1 发消息给 server
+        // 两条消息：分别发送 clientid，nickname
         System.out.println("[Client Online] Client ID = " + this.ID + ", NickName = " + this.NickName + ", is Online......");
         Message message = this.PrepareMsg(-1, "Client ID: " + this.getID()
                 + ", NickName: " + this.NickName + ", is online");

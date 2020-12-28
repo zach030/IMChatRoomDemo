@@ -1,6 +1,7 @@
 package netSrv;
 
 import comm.*;
+import org.omg.CORBA.Request;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -25,13 +26,13 @@ public class SocketManager {
 
     }
 
-    public void StartMsgQueue(Message message){
-        MsgProducer msgProducer = new MsgProducer(message,Integer.toString(message.getFromId()));
+    public void StartMsgQueue(Message message) {
+        MsgProducer msgProducer = new MsgProducer(message, Integer.toString(message.getFromId()));
         msgProducer.run();
     }
 
     public void DoTransmit(Message message) throws IOException {
-        switch (message.getToId()){
+        switch (message.getToId()) {
             case -1:
                 msgTransmit = new MsgToServer();
                 break;
@@ -46,9 +47,9 @@ public class SocketManager {
         msgTransmit.StartTransmit(message, targetSocket);
     }
 
-    public void Add2SocketManager(int ID, Socket socket) {
-        System.out.println("[SocketManager]  Successfully add client " + ID + " to socket manager!");
-        this.allClientSocketMap.put(ID, socket);
+    public void Add2SocketManager(Message message, Socket socket) {
+        System.out.println("[SocketManager]  Successfully add client " + message.getFromId() + " to socket manager!");
+        this.allClientSocketMap.put(message.getFromId(), socket);
     }
 
     public Socket GetTargetSocket(int id) {
@@ -58,12 +59,11 @@ public class SocketManager {
         return this.allClientSocketMap.get(id);
     }
 
-    public ArrayList<Socket> GetAllAvailableSocketList(){
+    public ArrayList<Socket> GetAllAvailableSocketList() {
         ArrayList<Socket> allSockets = new ArrayList<>();
-        Iterator<Map.Entry<Integer, Socket>> map1it=allClientSocketMap.entrySet().iterator();
-        while(map1it.hasNext())
-        {
-            Map.Entry<Integer, Socket> entry= map1it.next();
+        Iterator<Map.Entry<Integer, Socket>> map1it = allClientSocketMap.entrySet().iterator();
+        while (map1it.hasNext()) {
+            Map.Entry<Integer, Socket> entry = map1it.next();
             allSockets.add(entry.getValue());
         }
         return allSockets;
