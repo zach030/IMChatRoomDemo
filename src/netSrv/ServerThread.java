@@ -5,7 +5,6 @@ import comm.Message;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
@@ -24,7 +23,7 @@ public class ServerThread extends Thread {
         }
     }
 
-    private void HandleSocket() throws IOException, ClassNotFoundException {
+    private void HandleSocket() throws IOException {
         while (true) {
             InputStream inputStream = clientSocket.getInputStream();
             int eof = inputStream.read();

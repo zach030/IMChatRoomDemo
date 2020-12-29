@@ -1,7 +1,6 @@
 package comm;
 
-public class MsgProducer implements Runnable {
-
+public class MsgProducer extends Thread {
     private MsgQueue msgQueue;
     private Message messageSend2Queue;
     private String ClientID;

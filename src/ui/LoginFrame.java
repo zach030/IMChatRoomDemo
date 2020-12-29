@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class LoginFrame {
-    public static LoginFrame loginFrame = new LoginFrame();
 
     JFrame LoginMainFrame = new JFrame("登录");
     JLabel clientIdLabel = new JLabel("账号：");
@@ -25,9 +24,7 @@ public class LoginFrame {
 
     }
 
-    public static void main(String[] args) {
-        LoginFrame.loginFrame.initLoginFrame();
-    }
+
 
     public void initLoginFrame() {
         LoginMainFrame.setSize(400, 250);//设置窗体大小，只对顶层容器生效
@@ -63,7 +60,8 @@ public class LoginFrame {
                 try {
                     Client client = new Client(Integer.parseInt(clientId.getText()), clientName.getText(),
                             ServerConfig.serverConfig.Host, ServerConfig.serverConfig.Port);
-                    ClientFrame.clientFrame.Enter(client);
+                    ClientFrame clientFrame = new ClientFrame(client);
+                    new Thread(clientFrame).start();
                     LoginMainFrame.setVisible(false);
                 } catch (IOException ex) {
                     ex.printStackTrace();

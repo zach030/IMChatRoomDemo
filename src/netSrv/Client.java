@@ -29,7 +29,6 @@ public class Client {
 
     public void ClientOnline() throws IOException {
         //上线  1 发消息给 server
-        // 两条消息：分别发送 clientid，nickname
         System.out.println("[Client Online] Client ID = " + this.ID + ", NickName = " + this.NickName + ", is Online......");
         Message message = this.PrepareMsg(-1, "Client ID: " + this.getID()
                 + ", NickName: " + this.NickName + ", is online");
@@ -60,21 +59,20 @@ public class Client {
     public void ReceiveMsg() {
         System.out.println("[Client Receiver]  Client:" + this.ID + ", Socket is:" + this.socket + ", is receiving Message...");
         Ready2Receive ready2Receive = new Ready2Receive(this.socket);
-        new Thread(ready2Receive).start();
+        ready2Receive.start();
     }
 
-    static class Ready2Receive implements Runnable {
+    static class Ready2Receive extends Thread {
         private Socket socket;
-
         public Ready2Receive(Socket socket) {
             this.socket = socket;
         }
-
         @Override
         public void run() {
             try {
+                sleep(2000);
                 HandleReceivingSocket();
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }

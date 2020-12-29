@@ -1,14 +1,21 @@
 package ui;
 
 import netSrv.Client;
+import netSrv.SocketManager;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
-public class ClientFrame {
-    public static ClientFrame clientFrame = new ClientFrame();
+public class ClientFrame extends Thread{
     JFrame MainFrame = new JFrame("聊天室");
 
     FlowLayout fl = new FlowLayout(FlowLayout.CENTER, 10, 10);
@@ -31,20 +38,17 @@ public class ClientFrame {
     JTextArea sendText = new JTextArea();
     JScrollPane sendMsgScrollPane = new JScrollPane(sendText);
 
+    JButton refresh = new JButton("刷新");
     JButton sendButton = new JButton("发送");
 
-    public static void main(String[] a) {
-        //ClientFrame.clientFrame.Enter(true);
-    }
-
-    public void Enter(Client client){
-        this.client = client;
-        userInfoLabel.setText("您好，用户id: " + this.client.getID() + ", 昵称: " + this.client.getNickName());
+    public void run(){
         this.MainFrame.setVisible(true);
     }
 
-    public ClientFrame() {
+    public ClientFrame(Client client) {
         InitMainFrame();
+        this.client = client;
+        userInfoLabel.setText("您好，用户id: " + this.client.getID() + ", 昵称: " + this.client.getNickName());
     }
 
     public void InitMainFrame() {
@@ -75,8 +79,24 @@ public class ClientFrame {
                 }
             }
         });
+        friendJList.setBounds(0,50,150,200);
         FriendPanel.add(friendJList);
-        FriendPanel.setBounds(0,50,150,350);
+        refresh.setBounds(0,300,50,30);
+        refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("click");
+                listModel.clear();
+                ArrayList<Integer> clients = SocketManager.socketManager.GetAllAvailableClientList();
+                System.out.println(clients);
+                for(Integer i : clients){
+                    System.out.println(i);
+                    listModel.addElement(Integer.toString(i));
+                }
+            }
+        });
+        FriendPanel.add(refresh);
+        FriendPanel.setBounds(0,50,150,300);
         MainFrame.add(FriendPanel);
 
         ChatPanel.setBorder(BorderFactory.createTitledBorder("聊天页"));
@@ -88,6 +108,20 @@ public class ClientFrame {
         sendMsgScrollPane.setBounds(160,360,330,30);
         ChatPanel.add(sendMsgScrollPane);
         sendButton.setBounds(500,360,80,30);
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!sendText.getText().equals("")){
+                    try {
+                        client.DoSendMsg(-1,sendText.getText());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    receiveText.append("\n"+client.getNickName()+": "+sendText.getText());
+                    sendText.setText("");
+                }
+            }
+        });
         ChatPanel.add(sendButton);
         MainFrame.add(ChatPanel);
     }

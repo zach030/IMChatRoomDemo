@@ -28,7 +28,7 @@ public class SocketManager {
 
     public void StartMsgQueue(Message message) {
         MsgProducer msgProducer = new MsgProducer(message, Integer.toString(message.getFromId()));
-        msgProducer.run();
+        msgProducer.start();
     }
 
     public void DoTransmit(Message message) throws IOException {
@@ -50,6 +50,7 @@ public class SocketManager {
     public void Add2SocketManager(Message message, Socket socket) {
         System.out.println("[SocketManager]  Successfully add client " + message.getFromId() + " to socket manager!");
         this.allClientSocketMap.put(message.getFromId(), socket);
+        System.out.println(allClientSocketMap);
     }
 
     public Socket GetTargetSocket(int id) {
@@ -67,5 +68,16 @@ public class SocketManager {
             allSockets.add(entry.getValue());
         }
         return allSockets;
+    }
+
+    public ArrayList<Integer> GetAllAvailableClientList(){
+        ArrayList<Integer> allClients = new ArrayList<>();
+        System.out.println(allClientSocketMap);
+        Iterator<Map.Entry<Integer, Socket>> map1it = allClientSocketMap.entrySet().iterator();
+        while (map1it.hasNext()) {
+            Map.Entry<Integer, Socket> entry = map1it.next();
+            allClients.add(entry.getKey());
+        }
+        return allClients;
     }
 }
