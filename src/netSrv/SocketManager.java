@@ -42,9 +42,13 @@ public class SocketManager {
             default:
                 msgTransmit = new MsgToClient();
         }
-        Socket targetSocket = this.GetTargetSocket(message.getToId());
-        // target socket==null : send to server； !=null : send to client; broadcast
+        Socket targetSocket = this.GetTargetSocket(message);
+        // target socket==self : send to server； !=null : send to client; broadcast
         msgTransmit.StartTransmit(message, targetSocket);
+    }
+
+    public void RemoveDisableSocket(int id){
+        this.allClientSocketMap.remove(id);
     }
 
     public void Add2SocketManager(Message message, Socket socket) {
@@ -53,11 +57,12 @@ public class SocketManager {
         System.out.println(allClientSocketMap);
     }
 
-    public Socket GetTargetSocket(int id) {
-        if (this.allClientSocketMap.get(id) == null) {
-            return null;
+    public Socket GetTargetSocket(Message message) {
+        if (this.allClientSocketMap.get(message.getToId()) == null) {
+            // 如果没有目标socket，则说明服务器回写消息，target是本身
+            return this.allClientSocketMap.get(message.getFromId());
         }
-        return this.allClientSocketMap.get(id);
+        return this.allClientSocketMap.get(message.getToId());
     }
 
     public ArrayList<Socket> GetAllAvailableSocketList() {

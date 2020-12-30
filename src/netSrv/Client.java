@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class Client {
     private int ID;
@@ -17,6 +18,7 @@ public class Client {
     private Socket socket;
     private OutputStream outputStream;
     private InputStream inputStream;
+    private static ArrayList<String> receiveMsg = new ArrayList<>();
 
     public Client(int id, String nickName, String host, int port) throws IOException {
         this.ID = id;
@@ -64,13 +66,15 @@ public class Client {
 
     static class Ready2Receive extends Thread {
         private Socket socket;
+
         public Ready2Receive(Socket socket) {
             this.socket = socket;
         }
+
         @Override
         public void run() {
             try {
-                sleep(2000);
+                sleep(100);
                 HandleReceivingSocket();
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
@@ -97,11 +101,20 @@ public class Client {
                 message.SetMessageLen(len);
                 System.out.println("----->[Client Recv] Recv Message From Client Id =  " + message.getFromId() +
                         ", Message is : " + new String(message.getData(), StandardCharsets.UTF_8));
+                receiveMsg.add(message.getFromId() + ":" + new String(message.getData(), StandardCharsets.UTF_8));
             }
             socket.close();
         }
     }
 
+    public String GetReceivingMsg() {
+        if (receiveMsg.size() == 0) {
+            return "";
+        }
+        String msg = receiveMsg.get(receiveMsg.size() - 1);
+        receiveMsg.remove(msg);
+        return msg;
+    }
 
     public void ShutDownOutPut() throws IOException {
         this.socket.shutdownOutput();

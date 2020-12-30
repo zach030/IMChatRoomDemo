@@ -24,8 +24,12 @@ public class ServerThread extends Thread {
     }
 
     private void HandleSocket() throws IOException {
+        int clientId = 0;
         while (true) {
             InputStream inputStream = clientSocket.getInputStream();
+            if (inputStream==null){
+                break;
+            }
             int eof = inputStream.read();
             if (eof == -1) {
                 Server.serverLogList.add("[Server]  input stream is null now");
@@ -40,10 +44,11 @@ public class ServerThread extends Thread {
                 break;
             }
             message.SetMessageLen(len);
-            //SocketManager.socketManager.StartMsgQueue(message);
+            clientId = message.getFromId();
             SocketManager.socketManager.Add2SocketManager(message, clientSocket);
             SocketManager.socketManager.DoTransmit(message);
         }
+        SocketManager.socketManager.RemoveDisableSocket(clientId);
         Server.serverLogList.add("[Server] Socket :" + clientSocket + ", is Closed...");
         System.out.println("[Server] Socket :" + clientSocket + ", is Closed...");
         clientSocket.close();
