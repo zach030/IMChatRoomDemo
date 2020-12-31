@@ -20,11 +20,5 @@ public class MsgToServer implements MsgTransmit{
         // server 消息队列
         System.out.println("----->[Server] Recv Message from Client: " + message.getFromId() + " , Content is :"
                 + new String(message.getData(), StandardCharsets.UTF_8));
-        OutputStream outputStream = socket.getOutputStream();
-        ArrayList<Integer> clientsID = SocketManager.socketManager.GetAllAvailableClientList();
-        Message msgToClient = new Message(-1,message.getFromId(),clientsID.toString().getBytes());
-        ByteBuffer outBuffer = DataPack.dp.Pack(msgToClient);
-        outputStream.write(outBuffer.array());
-        outputStream.flush();
     }
 }

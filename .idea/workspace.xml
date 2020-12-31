@@ -2,19 +2,32 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f35969a3-31d3-4ed2-ad3e-fe3c4dbf44f9" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/netSrv/MsgHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/RecvMsgHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/SendMsgHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/test/ClientTest3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IMChatRoomDemo/test/ClientTest3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/ClientFrame$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/ClientFrame$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/ClientFrame$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/ClientFrame$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/ClientFrame$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/ClientFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/ClientFrame.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/comm/MsgToServer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/netSrv/Client$Ready2Receive.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/netSrv/Client.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/netSrv/Request.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/netSrv/ServerThread.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/ClientFrame$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/ClientFrame$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/ClientFrame$ReceivingMsg.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/ClientFrame$RefreshFriendList.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/ClientFrame.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/LoginFrame$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/IMChatRoomDemo/ui/LoginFrame.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/comm/DataPack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/comm/DataPack.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/comm/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/comm/Message.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/comm/MsgToServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/comm/MsgToServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/netSrv/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/netSrv/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/netSrv/Request.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/netSrv/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/netSrv/Server.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/netSrv/ServerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/netSrv/ServerThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/netSrv/SocketManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/netSrv/SocketManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/ClientTest2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/ClientTest2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/ClientTest3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/ClientTest3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/ThreadTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/ThreadTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ui/ClientFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/ClientFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/LoginFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/LoginFrame.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,8 +74,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -94,7 +107,7 @@
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.JavaFX" />
   </component>
-  <component name="RunManager" selected="Application.ClientFrame2">
+  <component name="RunManager" selected="Application.ThreadTest">
     <configuration name="ClientFrame1" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="test.ClientFrame1" />
       <module name="IMChatRoomDemo" />
@@ -110,19 +123,6 @@
     </configuration>
     <configuration name="ClientFrame2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="test.ClientFrame2" />
-      <module name="IMChatRoomDemo" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ClientTest2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="test.ClientTest2" />
       <module name="IMChatRoomDemo" />
       <extension name="coverage">
         <pattern>
@@ -160,13 +160,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ThreadTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="test.ThreadTest" />
+      <module name="IMChatRoomDemo" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.ThreadTest" />
         <item itemvalue="Application.ClientFrame2" />
         <item itemvalue="Application.ClientFrame1" />
         <item itemvalue="Application.ServerMonitor" />
         <item itemvalue="Application.ClientTest3" />
-        <item itemvalue="Application.ClientTest2" />
       </list>
     </recent_temporary>
   </component>
@@ -207,7 +220,7 @@
       <workItem from="1609080430982" duration="28242000" />
       <workItem from="1609167180270" duration="9641000" />
       <workItem from="1609211268179" duration="7481000" />
-      <workItem from="1609342239313" duration="6143000" />
+      <workItem from="1609342239313" duration="23935000" />
     </task>
     <servers />
   </component>
@@ -227,14 +240,14 @@
       <screen x="0" y="0" width="1280" height="689" />
     </state>
     <state x="-77" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.689@0.0.1280.689" timestamp="1609082206921" />
-    <state x="402" y="0" key="#com.intellij.ide.util.MemberChooser" timestamp="1609211515684">
+    <state x="402" y="0" key="#com.intellij.ide.util.MemberChooser" timestamp="1609398861095">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state x="402" y="0" key="#com.intellij.ide.util.MemberChooser/0.0.1280.689@0.0.1280.689" timestamp="1609211515684" />
-    <state x="278" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1609166838237">
+    <state x="402" y="0" key="#com.intellij.ide.util.MemberChooser/0.0.1280.689@0.0.1280.689" timestamp="1609398861095" />
+    <state x="36" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1609395728746">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state x="278" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.689@0.0.1280.689" timestamp="1609166838237" />
+    <state x="36" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.689@0.0.1280.689" timestamp="1609395728746" />
     <state x="309" y="34" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1609174943677">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
@@ -259,22 +272,22 @@
       <screen x="0" y="0" width="1280" height="689" />
     </state>
     <state x="371" y="0" key="FileChooserDialogImpl/0.0.1280.689@0.0.1280.689" timestamp="1609347772402" />
-    <state width="1227" height="387" key="GridCell.Tab.0.bottom" timestamp="1609348508004">
+    <state width="1227" height="259" key="GridCell.Tab.0.bottom" timestamp="1609381386995">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state width="1227" height="387" key="GridCell.Tab.0.bottom/0.0.1280.689@0.0.1280.689" timestamp="1609348508004" />
-    <state width="1227" height="387" key="GridCell.Tab.0.center" timestamp="1609348508003">
+    <state width="1227" height="259" key="GridCell.Tab.0.bottom/0.0.1280.689@0.0.1280.689" timestamp="1609381386995" />
+    <state width="1227" height="259" key="GridCell.Tab.0.center" timestamp="1609381386995">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state width="1227" height="387" key="GridCell.Tab.0.center/0.0.1280.689@0.0.1280.689" timestamp="1609348508003" />
-    <state width="1227" height="387" key="GridCell.Tab.0.left" timestamp="1609348508003">
+    <state width="1227" height="259" key="GridCell.Tab.0.center/0.0.1280.689@0.0.1280.689" timestamp="1609381386995" />
+    <state width="1227" height="259" key="GridCell.Tab.0.left" timestamp="1609381386995">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state width="1227" height="387" key="GridCell.Tab.0.left/0.0.1280.689@0.0.1280.689" timestamp="1609348508003" />
-    <state width="1227" height="387" key="GridCell.Tab.0.right" timestamp="1609348508003">
+    <state width="1227" height="259" key="GridCell.Tab.0.left/0.0.1280.689@0.0.1280.689" timestamp="1609381386995" />
+    <state width="1227" height="259" key="GridCell.Tab.0.right" timestamp="1609381386995">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
-    <state width="1227" height="387" key="GridCell.Tab.0.right/0.0.1280.689@0.0.1280.689" timestamp="1609348508003" />
+    <state width="1227" height="259" key="GridCell.Tab.0.right/0.0.1280.689@0.0.1280.689" timestamp="1609381386995" />
     <state width="1227" height="183" key="GridCell.Tab.1.bottom" timestamp="1609342468086">
       <screen x="0" y="0" width="1280" height="689" />
     </state>

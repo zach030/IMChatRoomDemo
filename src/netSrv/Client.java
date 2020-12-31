@@ -1,119 +1,230 @@
 package netSrv;
 
-import comm.DataPack;
 import comm.Message;
+import utils.RecvMsgHandler;
+import utils.SendMsgHandler;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Stack;
 
-public class Client {
+public class Client implements MsgHandler {
     private int ID;
     private String NickName;
     private Socket socket;
-    private OutputStream outputStream;
-    private InputStream inputStream;
+    boolean onlineStatus;
+    // 接收消息handler
+    private RecvMsgHandler recvMsgHandler;
+    // 接收消息队列 及 缓冲栈
+    // 客户端之间通信 队列
+    private ArrayList<AcceptMsg> fromClientMsg = new ArrayList<>();
+    private Stack<AcceptMsg> fromClientMsgStack = new Stack<>();
+    AcceptMsg acceptClientMsg;
+    // 服务端通知 队列
+    private ArrayList<AcceptMsg> fromServerNotice = new ArrayList<>();
+    private Stack<AcceptMsg> fromServerNoticeStack = new Stack<>();
+    AcceptMsg acceptServerNotice;
+    // 服务端 好友列表
+    private ArrayList<AcceptMsg> fromServerFriends = new ArrayList<>();
+    private Stack<AcceptMsg> fromServerFriendsStack = new Stack<>();
+    AcceptMsg acceptServerFriends;
+    // 发送消息handler
+    private SendMsgHandler sendMsgHandler;
+    // 发送消息队列
+    private ArrayList<Message> sendMsgs = new ArrayList<>();
+
     private static ArrayList<String> receiveMsg = new ArrayList<>();
 
     public Client(int id, String nickName, String host, int port) throws IOException {
         this.ID = id;
         this.NickName = nickName;
         this.socket = new Socket(host, port);
-        this.outputStream = this.socket.getOutputStream();
-        this.inputStream = this.socket.getInputStream();
+        this.onlineStatus = true;
+        recvMsgHandler = new RecvMsgHandler(this.socket);
         this.ClientOnline();
     }
 
+    //-----------------------------------------------------------//
+    // 客户端上线
     public void ClientOnline() throws IOException {
-        //上线  1 发消息给 server
-        System.out.println("[Client Online] Client ID = " + this.ID + ", NickName = " + this.NickName + ", is Online......");
-        Message message = this.PrepareMsg(-1, "Client ID: " + this.getID()
-                + ", NickName: " + this.NickName + ", is online");
-        this.SendMsg(message);
-        this.ReceiveMsg();
+        // 0 上线日志
+        PrintOnlineMsg();
+        // 1 发消息给 server
+        SayHelloToServer();
     }
 
+    // 客户端工作
+    public void ClientWork() {
+        // 接收消息thread
+        new Thread(new ClientThread()).start();
+        // 读取客户端消息 thread
+        new Thread(new ReadClientMsg()).start();
+        // 读取服务端通知 thread
+        new Thread(new ReadServerNotice()).start();
+        // 读取服务端好友信息 thread
+        new Thread(new ReadServerFriends()).start();
+    }
+
+    // 客户端下线
     public void ClientOffLine() {
         //下线
+        this.onlineStatus = false;
     }
 
-    public void DoSendMsg(int targetID, String content) throws IOException {
-        this.SendMsg(this.PrepareMsg(targetID, content));
-    }
+    //----------------------------------------------------------//
+    //  接收消息模块
+    private static class AcceptMsg {
+        int fromId;
+        String content;
+        boolean readStatus;
 
-    private Message PrepareMsg(int targetID, String content) {
-        Message message = new Message(this.ID, targetID, content.getBytes());
-        System.out.println("<------[Send Message] To Server: " + new String(message.getData(), StandardCharsets.UTF_8));
-        return message;
-    }
-
-    private void SendMsg(Message message) throws IOException {
-        ByteBuffer outBuffer = DataPack.dp.Pack(message);
-        outputStream.write(outBuffer.array());
-        outputStream.flush();
-    }
-
-    public void ReceiveMsg() {
-        System.out.println("[Client Receiver]  Client:" + this.ID + ", Socket is:" + this.socket + ", is receiving Message...");
-        Ready2Receive ready2Receive = new Ready2Receive(this.socket);
-        ready2Receive.start();
-    }
-
-    static class Ready2Receive extends Thread {
-        private Socket socket;
-
-        public Ready2Receive(Socket socket) {
-            this.socket = socket;
+        public AcceptMsg(int from, String content) {
+            this.fromId = from;
+            this.content = content;
+            readStatus = false;
         }
 
+        public String ReadMsg() {
+            this.readStatus = true;
+            return content;
+        }
+    }
+
+    public String Transfer2ClientMsg(AcceptMsg acceptMsg) {
+        return "客户端 " + acceptMsg.fromId + ": " + acceptMsg.content + "\n";
+    }
+
+    public String[] Transfer2FriendList(AcceptMsg acceptMsg){
+        //TODO 将好友信息进行分组 return
+    }
+
+    private class ClientThread extends Thread {
         @Override
         public void run() {
-            try {
-                sleep(100);
-                HandleReceivingSocket();
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+            while (onlineStatus) {
+                try {
+                    sleep(100);
+                    // 处理接收消息的func
+                    Message message = recvMsgHandler.DoReceiveMsg();
+                    AddMessageToQueue(message);
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
-        public void HandleReceivingSocket() throws IOException {
-            while (true) {
-                InputStream inputStream = this.socket.getInputStream();
-                int eof = inputStream.read();
-                if (eof == -1) {
-                    System.out.println("input stream is null now");
-                    break;
-                }
-                //System.out.println("eof is:" + eof);
-                byte[] msg = new byte[eof];
-                int len = inputStream.read(msg);
-
-                ByteBuffer buffer = ByteBuffer.wrap(msg);
-                Message message = DataPack.dp.Unpack(buffer);
-                if (message.IsEndOfMessage()) {
-                    break;
-                }
-                message.SetMessageLen(len);
-                System.out.println("----->[Client Recv] Recv Message From Client Id =  " + message.getFromId() +
-                        ", Message is : " + new String(message.getData(), StandardCharsets.UTF_8));
-                receiveMsg.add(message.getFromId() + ":" + new String(message.getData(), StandardCharsets.UTF_8));
+        public void AddMessageToQueue(Message message) {
+            if (message == null) {
+                return;
             }
-            socket.close();
+            System.out.println("----->[Client Recv] Recv Message From Id =  " + message.getFromId() +
+                    ", Message is : " + new String(message.getData(), StandardCharsets.UTF_8));
+            switch (message.getMsgType()) {
+                //TODO 根据msg-type 加入不同队列
+                case SERVER_CLIENT_NOTICE:
+                    AcceptMsg acceptMsg = new AcceptMsg(message.getFromId(), new String(message.getData(), StandardCharsets.UTF_8));
+                    fromServerNotice.add(acceptMsg);
+                    fromServerNoticeStack.push(acceptMsg);
+                    break;
+                case CLIENT_CLIENT_MESSAGE:
+                    AcceptMsg acceptMsg1 = new AcceptMsg(message.getFromId(), new String(message.getData(), StandardCharsets.UTF_8));
+                    fromClientMsg.add(acceptMsg1);
+                    fromClientMsgStack.push(acceptMsg1);
+                    break;
+                case SERVER_CLIENT_FRIENDS:
+                    AcceptMsg acceptMsg2 = new AcceptMsg(message.getFromId(), new String(message.getData(), StandardCharsets.UTF_8));
+                    fromServerFriends.add(acceptMsg2);
+                    fromServerFriendsStack.push(acceptMsg2);
+                    break;
+                case CLIENT_SERVER_NOTICE:
+                    System.out.println("unsupported msg type!");
+                    break;
+            }
         }
     }
 
-    public String GetReceivingMsg() {
-        if (receiveMsg.size() == 0) {
-            return "";
+    //------------------------------------------------------//
+    //发送消息模块
+    public void SendMsg(int toID, Message.MsgType msgType, String content) throws IOException {
+        sendMsgHandler = new SendMsgHandler(this.ID, this.socket, toID, msgType, content);
+        sendMsgHandler.DoSendMsg();
+    }
+
+    //------------------------------------------------//
+    // utils
+    private void PrintOnlineMsg() {
+        System.out.println("[Client Online] Client ID = " + ID + ", NickName = " + this.NickName + ", is Online......");
+    }
+
+    private void SayHelloToServer() throws IOException {
+        SendMsgHandler sendMsgHandler = new SendMsgHandler(this.ID, this.socket, -1, Message.MsgType.CLIENT_SERVER_NOTICE, "Client ID: " + this.getID()
+                + ", NickName: " + this.NickName + ", is online");
+        sendMsgHandler.DoSendMsg();
+    }
+
+    //-----------------------读取消息队列------------------------//
+    // 读客户端消息
+    private class ReadClientMsg extends Thread {
+        public void run() {
+            while (onlineStatus) {
+                try {
+                    if (!fromClientMsgStack.empty()) {
+                        acceptClientMsg = fromClientMsgStack.pop();
+                    }
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        String msg = receiveMsg.get(receiveMsg.size() - 1);
-        receiveMsg.remove(msg);
-        return msg;
+    }
+
+    // 读服务端通知
+    private class ReadServerNotice extends Thread {
+        public void run() {
+            while (onlineStatus) {
+                try {
+                    if (!fromServerNoticeStack.empty()) {
+                        acceptServerNotice = fromServerNoticeStack.pop();
+                    }
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    // 读服务端好友列表
+    private class ReadServerFriends extends Thread {
+        public void run() {
+            while (onlineStatus) {
+                try {
+                    if (!fromServerFriendsStack.empty()) {
+                        acceptServerFriends = fromServerFriendsStack.pop();
+                    }
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    //------------------------------------------------------------//
+
+    public AcceptMsg getAcceptClientMsg() {
+        return acceptClientMsg;
+    }
+
+    public AcceptMsg getAcceptServerNotice() {
+        return acceptServerNotice;
+    }
+
+    public AcceptMsg getAcceptServerFriends() {
+        return acceptServerFriends;
     }
 
     public void ShutDownOutPut() throws IOException {

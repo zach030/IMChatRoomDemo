@@ -1,6 +1,8 @@
 package ui;
 
+import comm.Message;
 import netSrv.Client;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -8,7 +10,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +17,7 @@ public class ClientFrame extends Thread {
     JFrame MainFrame = new JFrame("聊天室");
 
     FlowLayout fl = new FlowLayout(FlowLayout.CENTER, 10, 10);
-    private static Client client;
+    private Client client;
     int SendTo = -1;
     static String friendList = "";
     //个人信息面板
@@ -42,13 +43,12 @@ public class ClientFrame extends Thread {
     }
 
     public ClientFrame(Client client) {
-        ClientFrame.client = client;
+        this.client = client;
         InitMainFrame();
         userInfoLabel.setText("您好，用户id: " + this.client.getID() + ", 昵称: " + this.client.getNickName());
     }
 
     public void InitMainFrame() {
-
         MainFrame.setSize(630, 450);
         MainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         MainFrame.setFont(new Font("宋体", Font.PLAIN, 14));
@@ -95,80 +95,64 @@ public class ClientFrame extends Thread {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!sendText.getText().equals("")) {
-                    try {
-                        String[] msg = sendText.getText().split(":");
-                        client.DoSendMsg(SendTo, msg[1]);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
+                    String content = sendText.getText().split(":")[1];
+                    if (!content.equals("")) {
+                        try {
+                            client.SendMsg(SendTo, Message.MsgType.CLIENT_CLIENT_MESSAGE, content);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                        receiveText.append(client.getNickName() + ": " + sendText.getText() + "\n");
+                        sendText.setText("");
                     }
-                    receiveText.append(client.getNickName() + ": " + sendText.getText() + "\n");
-                    sendText.setText("");
                 }
             }
         });
         ChatPanel.add(sendButton);
         MainFrame.add(ChatPanel);
-        ReceivingMsg receivingMsg = new ReceivingMsg();
-        RefreshFriendList refreshFriendList = new RefreshFriendList();
-        new Thread(receivingMsg).start();
-        new Thread(refreshFriendList).start();
+
+        // 刷新消息界面thread
+        RefreshRecvMsg refreshRecvMsg = new RefreshRecvMsg();
+        refreshRecvMsg.start();
     }
 
-    static class ReceivingMsg extends Thread {
+    private class RefreshRecvMsg extends Thread {
+        // msg ---> split ---> server: friend list; client:msg resource
+        private String ReturnMsgSender(String msg) {
+            return msg.split(":")[0];
+        }
+
+        private String ReturnMsgContent(String msg) {
+            return msg.split(":")[1];
+        }
+
+        private void ReloadFriendList() {
+            listModel.clear();
+            friendList = friendList.replace("[", "").replace("]", "");
+            String[] friends = friendList.split(", ");
+            Pattern pattern = Pattern.compile("[0-9]+");
+            for (String friend : friends) {
+                //System.out.println("read friend is:" + friend);
+                Matcher matcher = pattern.matcher(friend);
+                if (matcher.matches()) {
+                    System.out.println("friends : " + friend);
+                    listModel.addElement(friend);
+                    return;
+                }
+            }
+        }
+
         public void run() {
             while (true) {
-                String msg = "";
+                //TODO 对accept msg的处理
+                receiveText.append(client.Transfer2ClientMsg(client.getAcceptClientMsg())+"\n");
                 try {
-                    msg = client.GetReceivingMsg();
-                    System.out.println("msg:" + msg);
-                    sleep(1000);
+                    sleep(100);
                 } catch (Exception e) {
                     e.printStackTrace();
                     break;
                 }
-                if (!msg.equals("")) {
-                    String[] fromMsg = msg.split(":");
-                    if (fromMsg[0].equals("-1")) {
-                        friendList = fromMsg[1];
-                        continue;
-                    } else {
-                        fromMsg[0] = "客户端" + fromMsg[0];
-                    }
-                    msg = fromMsg[0] + ": " + fromMsg[1];
-                    receiveText.append(msg + "\n");
-                }
-
-            }
-        }
-    }
-
-    static class RefreshFriendList extends Thread {
-
-        public void run() {
-            while (true) {
-                try {
-                    listModel.clear();
-                    if (friendList.equals("")){
-                        continue;
-                    }
-                    friendList = friendList.replace("[","").replace("]","");
-                    String[] friends = friendList.split(", ");
-                    for (String friend : friends) {
-                        System.out.println("read friend is:"+friend);
-                        Pattern pattern = Pattern.compile("[0-9]+");
-                        Matcher matcher = pattern.matcher((CharSequence) friend);
-                        boolean result = matcher.matches();
-                        if (result) {
-                            System.out.println("friends : " + friend);
-                            listModel.addElement(friend);
-                        } else {
-                            System.out.println("not str");
-                        }
-                    }
-                    sleep(2000);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                ReloadFriendList();
             }
         }
     }

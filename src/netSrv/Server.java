@@ -1,19 +1,21 @@
 package netSrv;
 
 import ui.ServerMonitor;
+import utils.SendMsgHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Server {
+public class Server{
     public static ArrayList<String> serverLogList = new ArrayList<>();
     private String Name;
     private String Host;
     private int Port;
     private int MaxConnNum;
     private ServerSocket serverSocket;
+    private SendMsgHandler sendMsgHandler;
     static boolean running;
 
     public Server(String name, String host, int port, int maxConnNum) throws IOException {
@@ -38,6 +40,7 @@ public class Server {
         System.out.println(this.ServerWelcome());
         while (running){
             Socket socket = this.serverSocket.accept();
+            // 接收消息线程
             ServerThread serverThread = new ServerThread(socket);
             serverThread.start();
         }
@@ -97,4 +100,5 @@ public class Server {
     public void setServerSocket(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
     }
+
 }

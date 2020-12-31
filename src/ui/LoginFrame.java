@@ -24,8 +24,6 @@ public class LoginFrame {
 
     }
 
-
-
     public void initLoginFrame() {
         LoginMainFrame.setSize(400, 250);//设置窗体大小，只对顶层容器生效
         LoginMainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);//设置窗体关闭操作，3表示关闭窗体退出程序
