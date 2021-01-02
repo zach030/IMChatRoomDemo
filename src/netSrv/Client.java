@@ -125,6 +125,9 @@ public class Client {
                     sleep(1000);
                     // 处理接收消息的func
                     Message message = recvMsgHandler.DoReceiveMsg();
+                    if (message==null){
+                        onlineStatus=false;
+                    }
                     AddMessageToQueue(message);
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();

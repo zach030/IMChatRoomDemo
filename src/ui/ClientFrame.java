@@ -7,8 +7,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -51,7 +50,6 @@ public class ClientFrame extends Thread {
 
     public void InitMainFrame() {
         MainFrame.setSize(630, 450);
-        MainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         MainFrame.setFont(new Font("宋体", Font.PLAIN, 14));
         MainFrame.setResizable(false);
 
@@ -82,7 +80,17 @@ public class ClientFrame extends Thread {
         FriendPanel.add(friendJList);
         FriendPanel.setBounds(0, 50, 150, 300);
         MainFrame.add(FriendPanel);
-
+        MainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                client.ClientOffLine();
+                try {
+                    client.getSocket().close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
         ChatPanel.setBorder(BorderFactory.createTitledBorder("聊天页"));
         receiveText.setEditable(false);
         ChatPanel.setLayout(null);
@@ -109,14 +117,14 @@ public class ClientFrame extends Thread {
                 }
             }
         });
-        broadcastSend.setBounds(20,270,30,30);
+        broadcastSend.setBounds(20, 270, 30, 30);
         broadcastSend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String content = sendText.getText();
-                if (!content.equals("")){
+                if (!content.equals("")) {
                     try {
-                        client.SendMsg(0, Message.MsgType.CLIENT_CLIENT_MESSAGE,content);
+                        client.SendMsg(0, Message.MsgType.CLIENT_CLIENT_MESSAGE, content);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -136,12 +144,12 @@ public class ClientFrame extends Thread {
 
     private class RefreshRecvMsg extends Thread {
         private void ReloadFriendList() {
-            if (client.getAcceptServerFriends()==null){
+            if (client.getAcceptServerFriends() == null) {
                 return;
             }
             listModel.clear();
             ArrayList<String> friends = client.Transfer2FriendList(client.getAcceptServerFriends());
-            for (String friend : friends){
+            for (String friend : friends) {
                 //System.out.println(friend);
                 listModel.addElement(friend);
             }
@@ -150,8 +158,8 @@ public class ClientFrame extends Thread {
         public void run() {
             while (true) {
                 try {
-                    if(client.getAcceptClientMsg()!=null){
-                        receiveText.append(client.Transfer2ClientMsg(client.getAcceptClientMsg())+"\n");
+                    if (client.getAcceptClientMsg() != null) {
+                        receiveText.append(client.Transfer2ClientMsg(client.getAcceptClientMsg()) + "\n");
                     }
                     ReloadFriendList();
                     sleep(1000);

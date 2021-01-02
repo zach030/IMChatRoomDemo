@@ -63,6 +63,10 @@ public class Server {
 
         private void ProcessClientMsg() throws IOException {
             Message message = recvMsgHandler.DoReceiveMsg();
+            if (message == null) {
+                clientSocket.close();
+                return;
+            }
             currentClientID = message.getFromId();
             System.out.println("[Server] Recv Msg from:" + message.getFromId() + ", content:" + new String(message.getData(), StandardCharsets.UTF_8));
             SocketManager.socketManager.Add2SocketManager(message, clientSocket);
@@ -70,7 +74,7 @@ public class Server {
         }
 
         public void run() {
-            while (clientSocket.isConnected()){
+            while (!clientSocket.isClosed()) {
                 try {
                     ProcessClientMsg();
                     sleep(100);
@@ -96,7 +100,8 @@ public class Server {
         }
 
         public void run() {
-            while (running) {
+            while (!socket.isClosed()) {
+                System.out.println(socket.isClosed());
                 try {
                     SendAliveSocketList();
                     sleep(2000);
