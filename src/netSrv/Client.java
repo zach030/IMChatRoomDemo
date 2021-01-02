@@ -102,7 +102,6 @@ public class Client {
     }
 
     public ArrayList<String> Transfer2FriendList(AcceptMsg acceptMsg) {
-        //TODO 将好友信息进行分组 return
         ArrayList<String> friendsList = new ArrayList<>();
         String allFriends = acceptMsg.content.replace("[", "").replace("]", "");
         String[] friends = allFriends.split(", ");

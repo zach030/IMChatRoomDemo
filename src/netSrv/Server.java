@@ -1,19 +1,15 @@
 package netSrv;
 
-import comm.DataPack;
 import comm.Message;
 import utils.RecvMsgHandler;
 import utils.SendMsgHandler;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class Server {
-    public static ArrayList<String> serverLogList = new ArrayList<>();
     private String Name;
     private String Host;
     private int Port;
@@ -74,7 +70,6 @@ public class Server {
                     SocketManager.socketManager.DoTransmit(message);
                 }
                 SocketManager.socketManager.RemoveDisableSocket(currentClientID);
-                Server.serverLogList.add("[Server] Socket :" + clientSocket + ", is Closed...");
                 System.out.println("[Server] Socket :" + clientSocket + ", is Closed...");
                 clientSocket.close();
                 this.interrupt();
@@ -109,7 +104,6 @@ public class Server {
     }
 
     public void Stop() throws IOException {
-        serverLogList.add(ServerByeBye());
         System.out.println(ServerByeBye());
         running = false;
         this.serverSocket.close();

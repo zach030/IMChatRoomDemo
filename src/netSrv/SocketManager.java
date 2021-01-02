@@ -14,7 +14,6 @@ import java.util.Map;
 // 0 ---- broadcast ;
 // 1..... --- to client
 
-//TODO socket 与 msg queue 组成 hashmap
 
 public class SocketManager {
     public static SocketManager socketManager = new SocketManager();

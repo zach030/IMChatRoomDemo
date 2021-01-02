@@ -11,8 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ClientFrame extends Thread {
     JFrame MainFrame = new JFrame("聊天室");
@@ -39,6 +37,8 @@ public class ClientFrame extends Thread {
     JScrollPane sendMsgScrollPane = new JScrollPane(sendText);
     JButton sendButton = new JButton("发送");
 
+    JButton broadcastSend = new JButton("广播消息");
+
     public void run() {
         this.MainFrame.setVisible(true);
     }
@@ -62,7 +62,7 @@ public class ClientFrame extends Thread {
         MainFrame.add(userInfoPanel);
 
         FriendPanel.setBorder(BorderFactory.createTitledBorder("好友信息"));
-        friendJList = new JList<String>(listModel);
+        friendJList = new JList<>(listModel);
         friendJList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -109,6 +109,23 @@ public class ClientFrame extends Thread {
                 }
             }
         });
+        broadcastSend.setBounds(20,270,30,30);
+        broadcastSend.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String content = sendText.getText();
+                if (!content.equals("")){
+                    try {
+                        client.SendMsg(0, Message.MsgType.CLIENT_CLIENT_MESSAGE,content);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    receiveText.append(client.getNickName() + "广播了一条消息: " + sendText.getText() + "\n");
+                    sendText.setText("");
+                }
+            }
+        });
+        FriendPanel.add(broadcastSend);
         ChatPanel.add(sendButton);
         MainFrame.add(ChatPanel);
 

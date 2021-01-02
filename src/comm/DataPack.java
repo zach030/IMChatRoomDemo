@@ -28,7 +28,6 @@ public class DataPack {
         int dataLen = sendMsg.getDataLen();
         sendMsg.setFromId(byteBuffer.get());
         sendMsg.setToId(byteBuffer.get());
-        //TODO msg type转换
         sendMsg.setMsgType(Message.MsgType.valueOf(byteBuffer.get()));
         byte[] data = new byte[dataLen];
         byteBuffer.get(data);
