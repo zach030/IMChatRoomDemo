@@ -1,11 +1,10 @@
 package test;
 
-import comm.Message;
+import msg.Message;
 import config.ServerConfig;
 import netSrv.Client;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class ClientTest3 {

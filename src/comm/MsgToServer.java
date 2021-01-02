@@ -1,7 +1,7 @@
 package comm;
 
-import netSrv.Client;
-import netSrv.SocketManager;
+import msg.DataPack;
+import msg.Message;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -9,7 +9,6 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class MsgToServer implements MsgTransmit{
-    private MsgQueue msgQueue = new MsgQueue();
     public MsgToServer(){
 
     }

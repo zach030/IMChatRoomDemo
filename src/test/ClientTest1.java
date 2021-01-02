@@ -1,6 +1,6 @@
 package test;
 
-import comm.Message;
+import msg.Message;
 import config.ServerConfig;
 import netSrv.Client;
 

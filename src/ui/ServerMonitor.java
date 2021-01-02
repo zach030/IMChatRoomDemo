@@ -83,10 +83,6 @@ public class ServerMonitor {
         BaseInfoPanel.add(Port);
 
         ServerFrame.add(BaseInfoPanel, BorderLayout.WEST);
-
-//        logPanel.setBorder(BorderFactory.createTitledBorder("运行日志"));
-//        logPanel.add(logSP);
-
         logPanel.setBorder(BorderFactory.createTitledBorder("运行日志"));
         logPanel.add(logSP);
         logPanel.setLayout(null);

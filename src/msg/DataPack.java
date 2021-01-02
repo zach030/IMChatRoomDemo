@@ -1,4 +1,4 @@
-package comm;
+package msg;
 
 import java.nio.ByteBuffer;
 

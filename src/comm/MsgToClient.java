@@ -1,5 +1,8 @@
 package comm;
 
+import msg.DataPack;
+import msg.Message;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;

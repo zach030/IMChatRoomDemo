@@ -1,4 +1,4 @@
-package comm;
+package msg;
 
 public class Message {
     public enum MsgType{

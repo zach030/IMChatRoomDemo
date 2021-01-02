@@ -1,13 +1,12 @@
 package netSrv;
 
 import comm.*;
-import org.omg.CORBA.Request;
+import msg.Message;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 // target: -1 --- to server;
@@ -21,14 +20,7 @@ public class SocketManager {
     private HashMap<Integer, Socket> allClientSocketMap = new HashMap<>();
     private MsgTransmit msgTransmit;
 
-    public SocketManager() {
-
-    }
-
-    public void StartMsgQueue(Message message) {
-        MsgProducer msgProducer = new MsgProducer(message, Integer.toString(message.getFromId()));
-        msgProducer.start();
-    }
+    public SocketManager() { }
 
     public void DoTransmit(Message message) throws IOException {
         switch (message.getToId()) {
@@ -66,9 +58,7 @@ public class SocketManager {
 
     public ArrayList<Socket> GetAllAvailableSocketList() {
         ArrayList<Socket> allSockets = new ArrayList<>();
-        Iterator<Map.Entry<Integer, Socket>> map1it = allClientSocketMap.entrySet().iterator();
-        while (map1it.hasNext()) {
-            Map.Entry<Integer, Socket> entry = map1it.next();
+        for (Map.Entry<Integer, Socket> entry : allClientSocketMap.entrySet()) {
             allSockets.add(entry.getValue());
         }
         return allSockets;
@@ -77,9 +67,7 @@ public class SocketManager {
     public ArrayList<Integer> GetAllAvailableClientList(){
         ArrayList<Integer> allClients = new ArrayList<>();
         System.out.println(allClientSocketMap);
-        Iterator<Map.Entry<Integer, Socket>> map1it = allClientSocketMap.entrySet().iterator();
-        while (map1it.hasNext()) {
-            Map.Entry<Integer, Socket> entry = map1it.next();
+        for (Map.Entry<Integer, Socket> entry : allClientSocketMap.entrySet()) {
             allClients.add(entry.getKey());
         }
         return allClients;

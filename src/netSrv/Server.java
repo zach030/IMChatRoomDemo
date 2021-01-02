@@ -1,8 +1,9 @@
 package netSrv;
 
-import comm.Message;
+import msg.Message;
 import utils.RecvMsgHandler;
 import utils.SendMsgHandler;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,7 +17,6 @@ public class Server {
     private int MaxConnNum;
     private ServerSocket serverSocket;
     private SendMsgHandler sendMsgHandler;
-    private RecvMsgHandler recvMsgHandler;
     static boolean running;
 
     public Server(String name, String host, int port, int maxConnNum) throws IOException {
@@ -40,8 +40,10 @@ public class Server {
         //0 开启日志
         System.out.println(ServerWelcome());
         //1 处理socket的主线程
-        while (running) {
+        int currentClient = 0;
+        while (running && currentClient <= MaxConnNum) {
             Socket socket = this.serverSocket.accept();
+            currentClient++;
             // 接收消息线程
             new Thread(new HandleClientMsg(socket)).start();
             // 更新在线客户端线程
@@ -49,35 +51,38 @@ public class Server {
         }
     }
 
-    private class HandleClientMsg extends Thread{
+    private class HandleClientMsg extends Thread {
         int currentClientID;
-        boolean clientStatus;
+        RecvMsgHandler recvMsgHandler;
         Socket clientSocket;
 
         public HandleClientMsg(Socket socket) {
             this.clientSocket = socket;
-            clientStatus = true;
+            recvMsgHandler = new RecvMsgHandler(clientSocket);
+        }
+
+        private void ProcessClientMsg() throws IOException {
+            Message message = recvMsgHandler.DoReceiveMsg();
+            currentClientID = message.getFromId();
+            System.out.println("[Server] Recv Msg from:" + message.getFromId() + ", content:" + new String(message.getData(), StandardCharsets.UTF_8));
+            SocketManager.socketManager.Add2SocketManager(message, clientSocket);
+            SocketManager.socketManager.DoTransmit(message);
         }
 
         public void run() {
-            try {
-                while (clientStatus) {
-                    recvMsgHandler = new RecvMsgHandler(clientSocket);
-                    Message message = recvMsgHandler.DoReceiveMsg();
-                    currentClientID = message.getFromId();
-                    System.out.println("[Server] Recv Msg from:"+message.getFromId()+", content:"+new String(message.getData(), StandardCharsets.UTF_8));
-                    SocketManager.socketManager.Add2SocketManager(message, clientSocket);
-                    SocketManager.socketManager.DoTransmit(message);
+            while (clientSocket.isConnected()){
+                try {
+                    ProcessClientMsg();
+                    sleep(100);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                SocketManager.socketManager.RemoveDisableSocket(currentClientID);
-                System.out.println("[Server] Socket :" + clientSocket + ", is Closed...");
-                clientSocket.close();
-                this.interrupt();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            SocketManager.socketManager.RemoveDisableSocket(currentClientID);
+            System.out.println("[Server] Socket :" + clientSocket + ", is Closed...");
         }
     }
+
     private class HandleClientSocket extends Thread {
         private Socket socket;
 
@@ -87,15 +92,14 @@ public class Server {
 
         private void SendAliveSocketList() throws IOException {
             ArrayList<Integer> clientsID = SocketManager.socketManager.GetAllAvailableClientList();
-            //System.out.println("Clients list:" + clientsID);
-            SendMsg(socket, Message.MsgType.SERVER_CLIENT_FRIENDS,clientsID.toString());
+            SendMsg(socket, Message.MsgType.SERVER_CLIENT_FRIENDS, clientsID.toString());
         }
 
         public void run() {
-            while (running){
+            while (running) {
                 try {
                     SendAliveSocketList();
-                    sleep(1000);
+                    sleep(2000);
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }

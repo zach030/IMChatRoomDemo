@@ -1,6 +1,6 @@
 package ui;
 
-import comm.Message;
+import msg.Message;
 import netSrv.Client;
 
 import javax.swing.*;

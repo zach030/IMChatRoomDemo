@@ -1,6 +1,6 @@
 package netSrv;
 
-import comm.Message;
+import msg.Message;
 import utils.RecvMsgHandler;
 import utils.SendMsgHandler;
 

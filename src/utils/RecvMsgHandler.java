@@ -1,7 +1,7 @@
 package utils;
 
-import comm.DataPack;
-import comm.Message;
+import msg.DataPack;
+import msg.Message;
 
 import java.io.IOException;
 import java.io.InputStream;
