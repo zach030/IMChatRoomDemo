@@ -8,7 +8,7 @@ public class DataPack {
 
     // msg-len  end-flag    data-len   from-client-id  to-client-id  msg-type data
     public ByteBuffer Pack(Message message) {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(message.GetMessageLen());
+        ByteBuffer byteBuffer = ByteBuffer.allocate(message.GetMessageLen()+1);
         byteBuffer.put((byte) message.GetMessageLen());
         byteBuffer.put((byte) (message.getDataLen()>>8));
         byteBuffer.put((byte) message.getDataLen());

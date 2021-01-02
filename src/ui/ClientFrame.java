@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -117,42 +118,29 @@ public class ClientFrame extends Thread {
     }
 
     private class RefreshRecvMsg extends Thread {
-        // msg ---> split ---> server: friend list; client:msg resource
-        private String ReturnMsgSender(String msg) {
-            return msg.split(":")[0];
-        }
-
-        private String ReturnMsgContent(String msg) {
-            return msg.split(":")[1];
-        }
-
         private void ReloadFriendList() {
+            if (client.getAcceptServerFriends()==null){
+                return;
+            }
             listModel.clear();
-            friendList = friendList.replace("[", "").replace("]", "");
-            String[] friends = friendList.split(", ");
-            Pattern pattern = Pattern.compile("[0-9]+");
-            for (String friend : friends) {
-                //System.out.println("read friend is:" + friend);
-                Matcher matcher = pattern.matcher(friend);
-                if (matcher.matches()) {
-                    System.out.println("friends : " + friend);
-                    listModel.addElement(friend);
-                    return;
-                }
+            ArrayList<String> friends = client.Transfer2FriendList(client.getAcceptServerFriends());
+            for (String friend : friends){
+                //System.out.println(friend);
+                listModel.addElement(friend);
             }
         }
 
         public void run() {
             while (true) {
-                //TODO 对accept msg的处理
-                receiveText.append(client.Transfer2ClientMsg(client.getAcceptClientMsg())+"\n");
                 try {
-                    sleep(100);
+                    if(client.getAcceptClientMsg()!=null){
+                        receiveText.append(client.Transfer2ClientMsg(client.getAcceptClientMsg())+"\n");
+                    }
+                    ReloadFriendList();
+                    sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    break;
                 }
-                ReloadFriendList();
             }
         }
     }

@@ -56,6 +56,7 @@ public class LoginFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    //System.out.println("client id:"+Integer.parseInt(clientId.getText())+",name:"+clientName.getText());
                     Client client = new Client(Integer.parseInt(clientId.getText()), clientName.getText(),
                             ServerConfig.serverConfig.Host, ServerConfig.serverConfig.Port);
                     ClientFrame clientFrame = new ClientFrame(client);

@@ -31,7 +31,7 @@ public class SendMsgHandler {
 
     private Message prepareMsg() {
         Message message = new Message(fromID, sendToID, content.getBytes(), msgType);
-        System.out.println("<------[Send Message] To Server: " + new String(message.getData(), StandardCharsets.UTF_8));
+        System.out.println("<------[Send Message] To Server From:"+message.getFromId()+", Content :" + new String(message.getData(), StandardCharsets.UTF_8));
         return message;
     }
 

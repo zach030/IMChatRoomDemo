@@ -9,8 +9,11 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Client implements MsgHandler {
+public class Client {
+    //TODO ID范围仅支持-128，127 即1byte大小
     private int ID;
     private String NickName;
     private Socket socket;
@@ -30,6 +33,7 @@ public class Client implements MsgHandler {
     private ArrayList<AcceptMsg> fromServerFriends = new ArrayList<>();
     private Stack<AcceptMsg> fromServerFriendsStack = new Stack<>();
     AcceptMsg acceptServerFriends;
+
     // 发送消息handler
     private SendMsgHandler sendMsgHandler;
     // 发送消息队列
@@ -44,6 +48,7 @@ public class Client implements MsgHandler {
         this.onlineStatus = true;
         recvMsgHandler = new RecvMsgHandler(this.socket);
         this.ClientOnline();
+        this.ClientWork();
     }
 
     //-----------------------------------------------------------//
@@ -96,8 +101,21 @@ public class Client implements MsgHandler {
         return "客户端 " + acceptMsg.fromId + ": " + acceptMsg.content + "\n";
     }
 
-    public String[] Transfer2FriendList(AcceptMsg acceptMsg){
+    public ArrayList<String> Transfer2FriendList(AcceptMsg acceptMsg) {
         //TODO 将好友信息进行分组 return
+        ArrayList<String> friendsList = new ArrayList<>();
+        String allFriends = acceptMsg.content.replace("[", "").replace("]", "");
+        String[] friends = allFriends.split(", ");
+        Pattern pattern = Pattern.compile("[0-9]+");
+        for (String friend : friends) {
+            //System.out.println("read friend is:" + friend);
+            Matcher matcher = pattern.matcher(friend);
+            if (matcher.matches()) {
+                System.out.println("friends : " + friend);
+                friendsList.add(friend);
+            }
+        }
+        return friendsList;
     }
 
     private class ClientThread extends Thread {
@@ -105,7 +123,7 @@ public class Client implements MsgHandler {
         public void run() {
             while (onlineStatus) {
                 try {
-                    sleep(100);
+                    sleep(1000);
                     // 处理接收消息的func
                     Message message = recvMsgHandler.DoReceiveMsg();
                     AddMessageToQueue(message);
@@ -159,9 +177,8 @@ public class Client implements MsgHandler {
     }
 
     private void SayHelloToServer() throws IOException {
-        SendMsgHandler sendMsgHandler = new SendMsgHandler(this.ID, this.socket, -1, Message.MsgType.CLIENT_SERVER_NOTICE, "Client ID: " + this.getID()
+        SendMsg(-1, Message.MsgType.CLIENT_SERVER_NOTICE, "Client ID: " + this.getID()
                 + ", NickName: " + this.NickName + ", is online");
-        sendMsgHandler.DoSendMsg();
     }
 
     //-----------------------读取消息队列------------------------//
@@ -172,6 +189,9 @@ public class Client implements MsgHandler {
                 try {
                     if (!fromClientMsgStack.empty()) {
                         acceptClientMsg = fromClientMsgStack.pop();
+                        System.out.println("[Client] Read msg from client:" + acceptClientMsg.content);
+                    } else {
+                        acceptClientMsg = null;
                     }
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -188,6 +208,9 @@ public class Client implements MsgHandler {
                 try {
                     if (!fromServerNoticeStack.empty()) {
                         acceptServerNotice = fromServerNoticeStack.pop();
+                        System.out.println("[Client] Read Server Notice:" + acceptServerNotice.content);
+                    } else {
+                        acceptServerNotice = null;
                     }
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -204,6 +227,9 @@ public class Client implements MsgHandler {
                 try {
                     if (!fromServerFriendsStack.empty()) {
                         acceptServerFriends = fromServerFriendsStack.pop();
+                        System.out.println("[Client] Read Server friends list:" + acceptServerFriends.content);
+                    } else {
+                        acceptServerFriends = null;
                     }
                     sleep(1000);
                 } catch (InterruptedException e) {
