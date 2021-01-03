@@ -3,7 +3,6 @@ package netSrv;
 import msg.Message;
 import utils.RecvMsgHandler;
 import utils.SendMsgHandler;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,8 +15,7 @@ public class Server {
     private int Port;
     private int MaxConnNum;
     private ServerSocket serverSocket;
-    private SendMsgHandler sendMsgHandler;
-    static boolean running;
+    private boolean running;
 
     public Server(String name, String host, int port, int maxConnNum) throws IOException {
         this.Name = name;
@@ -51,7 +49,7 @@ public class Server {
         }
     }
 
-    private class HandleClientMsg extends Thread {
+    private static class HandleClientMsg extends Thread {
         int currentClientID;
         RecvMsgHandler recvMsgHandler;
         Socket clientSocket;
@@ -101,7 +99,6 @@ public class Server {
 
         public void run() {
             while (!socket.isClosed()) {
-                System.out.println(socket.isClosed());
                 try {
                     SendAliveSocketList();
                     sleep(2000);
@@ -120,56 +117,7 @@ public class Server {
 
     // 封装后的服务器发送消息模块
     public void SendMsg(Socket socket, Message.MsgType msgType, String content) throws IOException {
-        sendMsgHandler = new SendMsgHandler(-1, socket, 0, msgType, content);
+        SendMsgHandler sendMsgHandler = new SendMsgHandler(-1, socket, 0, msgType, content);
         sendMsgHandler.DoSendMsg();
     }
-
-    public static boolean isRunning() {
-        return running;
-    }
-
-    public static void setRunning(boolean running) {
-        Server.running = running;
-    }
-
-    public String getName() {
-        return Name;
-    }
-
-    public void setName(String name) {
-        Name = name;
-    }
-
-    public String getHost() {
-        return Host;
-    }
-
-    public void setHost(String host) {
-        Host = host;
-    }
-
-    public int getPort() {
-        return Port;
-    }
-
-    public void setPort(int port) {
-        Port = port;
-    }
-
-    public int getMaxConnNum() {
-        return MaxConnNum;
-    }
-
-    public void setMaxConnNum(int maxConnNum) {
-        MaxConnNum = maxConnNum;
-    }
-
-    public ServerSocket getServerSocket() {
-        return serverSocket;
-    }
-
-    public void setServerSocket(ServerSocket serverSocket) {
-        this.serverSocket = serverSocket;
-    }
-
 }

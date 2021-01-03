@@ -85,7 +85,7 @@ public class ClientFrame extends Thread {
             public void windowClosing(WindowEvent e) {
                 client.ClientOffLine();
                 try {
-                    client.getSocket().close();
+                    client.CloseSocket();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }

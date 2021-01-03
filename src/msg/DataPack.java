@@ -21,7 +21,6 @@ public class DataPack {
 
     public Message Unpack(ByteBuffer byteBuffer) {
         Message sendMsg = new Message();
-        // msgLen----isEnd----dataLen----data
         byte head = byteBuffer.get();
         sendMsg.setEndFlag(head);
         sendMsg.setDataLen(head+byteBuffer.get());

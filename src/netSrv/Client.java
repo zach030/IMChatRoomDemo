@@ -34,11 +34,6 @@ public class Client {
     private Stack<AcceptMsg> fromServerFriendsStack = new Stack<>();
     AcceptMsg acceptServerFriends;
 
-    // 发送消息handler
-    private SendMsgHandler sendMsgHandler;
-    // 发送消息队列
-    private ArrayList<Message> sendMsgs = new ArrayList<>();
-
     private static ArrayList<String> receiveMsg = new ArrayList<>();
 
     public Client(int id, String nickName, String host, int port) throws IOException {
@@ -136,9 +131,6 @@ public class Client {
         }
 
         public void AddMessageToQueue(Message message) {
-            if (message == null) {
-                return;
-            }
             System.out.println("----->[Client Recv] Recv Message From Id =  " + message.getFromId() +
                     ", Message is : " + new String(message.getData(), StandardCharsets.UTF_8));
             switch (message.getMsgType()) {
@@ -168,7 +160,8 @@ public class Client {
     //------------------------------------------------------//
     //发送消息模块
     public void SendMsg(int toID, Message.MsgType msgType, String content) throws IOException {
-        sendMsgHandler = new SendMsgHandler(this.ID, this.socket, toID, msgType, content);
+        // 发送消息handler
+        SendMsgHandler sendMsgHandler = new SendMsgHandler(this.ID, this.socket, toID, msgType, content);
         sendMsgHandler.DoSendMsg();
     }
 
@@ -255,10 +248,6 @@ public class Client {
         return acceptServerFriends;
     }
 
-    public void ShutDownOutPut() throws IOException {
-        this.socket.shutdownOutput();
-    }
-
     public void CloseSocket() throws IOException {
         this.socket.close();
     }
@@ -279,12 +268,5 @@ public class Client {
         NickName = nickName;
     }
 
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
 
 }
